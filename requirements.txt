@@ -1,0 +1,5 @@
+Flask
+Pillow
+boto3
+python-dotenv
+
