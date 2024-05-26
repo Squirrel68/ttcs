@@ -3,6 +3,10 @@ import boto3
 import csv
 from PIL import Image, ImageDraw
 import os
+from dotenv import load_dotenv
+
+# Load các biến môi trường từ tệp .env
+load_dotenv('config.env')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -63,4 +67,6 @@ def upload():
         return jsonify({'result_image': result_image, 'celebrities': celebrities})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Sử dụng giá trị PORT từ biến môi trường
+    port = int(os.getenv("PORT", 5000))
+    app.run(debug=True, port=port)
