@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Recognize Image</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Nhóm 04 Thực Tập Cơ Sở</h1>
+        <p>Bạn thấy ảnh người nổi tiếng nhưng không nhớ ra tên người ấy là ai</p>
+        <p>CHỌN ảnh, click Upload. Chưa đến 10 giây sau tên người ấy sẽ hiện ra. </p>
+    </header>
+    <main>
+        <div class="container">
+            <div class="left-pane">
+                <h2>Upload an Image</h2>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <input type="file" name="file" id="file-input">
+                    <input type="submit" value="Upload">
+                </form>
+                <div id="uploaded-image">
+                    <h3>Uploaded Image:</h3>
+                    <img id="uploaded-img" src="#" alt="Uploaded Image" style="display:none;">
+                </div>
+            </div>
+            <div class="right-pane">
+                <h2>Recognition Result</h2>
+                <div id="result-image">
+                    <img id="result-img" src="#" alt="Result Image" style="display:none;">
+                </div>
+                <h3>Recognized Celebrities:</h3>
+                <ul id="celebrities-list"></ul>
+            </div>
+        </div>
+    </main>
+    <script>
+        $(document).ready(function () {
+            $('#upload-form').on('submit', function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            $('#uploaded-img').attr('src', URL.createObjectURL($('#file-input')[0].files[0])).show();
+                            $('#result-img').attr('src', '/static/' + data.result_image).show();
+                            $('#celebrities-list').empty();
+                            data.celebrities.forEach(function (celeb) {
+                                $('#celebrities-list').append('<li>' + celeb + '</li>');
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
